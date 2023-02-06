@@ -33,7 +33,7 @@ namespace CrudDemoApp.Repositories
                 {
                     var claims = new[]
                     {
-                        new Claim(ClaimTypes.Role, user.FkRoleId.ToString()),
+                        new Claim(ClaimTypes.Role, user.Role.RoleName),
                         new Claim(ClaimTypes.Name, user.Name),
                         new Claim(ClaimTypes.PrimarySid, user.Id.ToString()),
                     };

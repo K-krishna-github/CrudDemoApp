@@ -16,6 +16,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<EmployeeContext>(options => options.UseSqlServer(Helper.Connectionstring));
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -27,16 +28,18 @@ builder.Services.AddAuthentication(options =>
 {
     options.SaveToken = true;
     options.RequireHttpsMetadata = false;
-    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+    options.TokenValidationParameters = new TokenValidationParameters()
     {
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Helper.Connectionstring)),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Helper.SymmetricSeccurityKey)),
         ValidateIssuerSigningKey = true,
         ValidateIssuer = false,
-        ValidateAudience = false
+        ValidateAudience = false,
+        ValidateLifetime = true
     };
 });
 
 //Dependency Injection
+builder.Services.AddSingleton<ClaimServices>();
 builder.Services.AddTransient<IEmployee, EmployeeRepos>();
 builder.Services.AddTransient<ILogin,LoginRepos>();
 
@@ -51,7 +54,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

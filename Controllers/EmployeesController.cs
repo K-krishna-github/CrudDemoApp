@@ -17,25 +17,21 @@ namespace CrudDemoApp.Controllers
         {
             this.emprepos = emprepos;
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("addemployee")]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Responce>> AddEmployee(AddEmployeeDto employee)
         {
             var responce = new Responce();
             await emprepos.AddEmployee(employee);
             return responce;
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         [Route("updateemployee")]
-        [Authorize(Roles = "Admin")]
-
         public async Task<ActionResult<Responce>> UpdateEmployee(EditEmployeeDto editEmployeeDto)
         {
             var responce = new Responce();
-
             var employee = await emprepos.UpdateEmployee(editEmployeeDto);
             if (employee)
             {
@@ -47,27 +43,20 @@ namespace CrudDemoApp.Controllers
             }
         }
 
-
         [Authorize(Roles = "Admin")]
         [HttpGet]
         [Route("getemployees")]
-       
+        public async Task<ActionResult<List<EmployeeDto>>> GetEmployees() => await emprepos.GetEmployees();
 
-        public async Task<ActionResult<List<EmployeeDto>>> GetEmployees()
-        {
 
-            var employees = await emprepos.GetEmployees();
-            return employees;
-        }
 
-        [HttpGet("GetById")]
         [Authorize(Roles = "Admin")]
+        [HttpGet]
+        [Route("GetById")]
         public async Task<ActionResult<EmployeeDto>> GetEmployee(int id)
         {
-           
-
             var employee = await emprepos.GetEmployee(id);
-            if(employee != null)
+            if (employee != null)
             {
                 return employee;
             }
@@ -76,8 +65,9 @@ namespace CrudDemoApp.Controllers
                 return NotFound();
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete]
+        [Route("DeleteEmployee")]
         public async Task<ActionResult<Responce>> DeleteEmployee(int id)
         {
             var responce = new Responce();
@@ -92,22 +82,24 @@ namespace CrudDemoApp.Controllers
             }
         }
 
-        //[HttpGet("GetEmployeeInfo")]
-        //[Authorize(Roles = "Employee")]
-        //public async Task<ActionResult<EmployeeDto>> GetEmployeeInfo()
-        //{
+
+        [Authorize(Roles ="Employee")]
+        [HttpGet]
+        [Route("GetEmployeeInfo")]
+        public async Task<ActionResult<EmployeeDto>> GetEmployeeInfo()
+        {
 
 
-        //    var employee = await emprepos.GetEmployeeInfo();
-        //    if (employee != null)
-        //    {
-        //        return employee;
-        //    }
-        //    else
-        //    {
-        //        return NotFound();
-        //    }
-        //}
+            var employee = await emprepos.GetEmployeeInfo();
+            if (employee != null)
+            {
+                return employee;
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
 
 
     }

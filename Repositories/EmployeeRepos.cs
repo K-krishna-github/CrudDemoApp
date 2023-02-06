@@ -15,17 +15,17 @@ namespace CrudDemoApp.Repositories
         Task AddEmployee(AddEmployeeDto AddemployeeDto);
         Task<bool> DeleteEmployee(int id);
 
-       // Task<EmployeeDto> GetEmployeeInfo();
+        Task<EmployeeDto> GetEmployeeInfo();
     }
     public class EmployeeRepos : IEmployee
     {
         private readonly EmployeeContext _context;
-       // private readonly  ClaimServices )_claimServices;
+        private readonly  ClaimServices _claimServices;
 
-        public EmployeeRepos(EmployeeContext context)//, ClaimServices claimServices)
+        public EmployeeRepos(EmployeeContext context, ClaimServices claimServices)
         {
             _context = context;
-            //_claimServices = claimServices;
+            _claimServices = claimServices;
         }
 
         public async Task AddEmployee(AddEmployeeDto addemployeeDto)
@@ -81,21 +81,20 @@ namespace CrudDemoApp.Repositories
         {
             try
             {
-                var employee = await _context.employees.FirstOrDefaultAsync(x => x.Id == id && x.IsActive && !x.IsDelete);
+                var employee = await _context.employees.Where(x => x.Id == id && x.IsActive && !x.IsDelete).Select(x => new EmployeeDto()
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Email = x.Email,
+                    Password = x.Password,
+                    FatherName = x.FatherName,
+                    Age = x.Age,
+                    Address = x.Address
+                }).FirstOrDefaultAsync();
                 if (employee != null)
                 {
 
-                    var emp = new EmployeeDto()
-                    {
-                        Id = employee.Id,
-                        Name = employee.Name,
-                        Email = employee.Email,
-                        Password = employee.Password,
-                        FatherName = employee.FatherName,
-                        Age = employee.Age,
-                        Address = employee.Address
-                    };
-                    return emp;
+                    return employee;
                 }
                 else
                 {
@@ -111,27 +110,38 @@ namespace CrudDemoApp.Repositories
             }
         }
 
-        //public async Task<EmployeeDto> GetEmployeeInfo()
-        //{
-        //    try
-        //    {
-        //        int id = _claimServices.GetCurrentUserId();
-        //        var employee = await GetEmployee(id);
-        //        if(employee != null)
-        //        {
-        //            return employee;
-        //        }
-        //        else
-        //        {
-        //            return null;
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
+        public async Task<EmployeeDto> GetEmployeeInfo()
+        {
+            try
+            {
+                 int id = _claimServices.GetCurrentUserId();
+                var employee = await _context.employees.Where(x => x.Id == id && x.IsActive && !x.IsDelete).Select(x => new EmployeeDto()
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Email = x.Email,
+                    Password = x.Password,
+                    FatherName = x.FatherName,
+                    Age = x.Age,
+                    Address = x.Address
+                }).FirstOrDefaultAsync();
+                if (employee != null)
+                {
 
-        //        throw;
-        //    }
-        //}
+                    return employee;
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
 
         public async Task<List<EmployeeDto>> GetEmployees()
         {

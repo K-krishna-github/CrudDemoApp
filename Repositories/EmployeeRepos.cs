@@ -44,7 +44,7 @@ namespace CrudDemoApp.Repositories
                     Address = addemployeeDto.Address,
                     IsActive = true,
                     IsDelete = false,
-                    FkRoleId = 1
+                    FkRoleId = _claimServices.GetCurrentUserId()
                 };
                 await _context.employees.AddAsync(employee);
                 await _context.SaveChangesAsync();
@@ -174,7 +174,7 @@ namespace CrudDemoApp.Repositories
                     return data;
                 }
                 else
-                {
+                {   
                     var data = new PaginationDto<EmployeeDto>();
                     data.Count = employees.Count();
                     data.Entities = employees.OrderByDescending(x => x.Id).Skip(skip).Take(maxresults).ToList();

@@ -18,7 +18,7 @@
         public int PageSize { get; set; }
         public int Count { get; set; }
         public int Totalpages
-        {
+        { 
             get
             {
                 return (int)Math.Ceiling((double)Count / (double)PageSize);

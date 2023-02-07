@@ -103,10 +103,10 @@ namespace CrudDemoApp.Repositories
 
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new ApplicationException(ex.Message);
             }
         }
 

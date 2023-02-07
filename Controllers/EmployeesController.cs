@@ -17,90 +17,42 @@ namespace CrudDemoApp.Controllers
         {
             this.emprepos = emprepos;
         }
+
+
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("addemployee")]
-        public async Task<ActionResult<Responce>> AddEmployee(AddEmployeeDto employee)
-        {
-            var responce = new Responce();
-            await emprepos.AddEmployee(employee);
-            return responce;
-        }
+        public async Task<ActionResult<Responce>> AddEmployee(AddEmployeeDto employee) => await emprepos.AddEmployee(employee);
+       
+
         [Authorize(Roles = "Admin")]
         [HttpPut]
         [Route("updateemployee")]
-        public async Task<ActionResult<Responce>> UpdateEmployee(EditEmployeeDto editEmployeeDto)
-        {
-            var responce = new Responce();
-            var employee = await emprepos.UpdateEmployee(editEmployeeDto);
-            if (employee)
-            {
-                return responce;
-            }
-            else
-            {
-                return new Responce() { ErrorMessage = "Data Not Found" };
-            }
-        }
+        public async Task<ActionResult<Responce>> UpdateEmployee(EditEmployeeDto editEmployeeDto) =>await emprepos.UpdateEmployee(editEmployeeDto);
+        
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
         [Route("getemployees")]
-        public async Task<ActionResult<List<EmployeeDto>>> GetEmployees() => await emprepos.GetEmployees();
-
+        public async Task<ActionResult<PaginationDto<EmployeeDto>>> GetEmployees(string? searchtext, int skip=0, int maxresults=10) => await emprepos.GetEmployees(searchtext,skip,maxresults);
 
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
         [Route("GetById")]
-        public async Task<ActionResult<EmployeeDto>> GetEmployee(int id)
-        {
-            var employee = await emprepos.GetEmployee(id);
-            if (employee != null)
-            {
-                return employee;
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
+        public async Task<ActionResult<EmployeeDto>> GetEmployee(int id)=> await emprepos.GetEmployee(id);
+
+
         [Authorize(Roles = "Admin")]
         [HttpDelete]
         [Route("DeleteEmployee")]
-        public async Task<ActionResult<Responce>> DeleteEmployee(int id)
-        {
-            var responce = new Responce();
-            var employee = await emprepos.DeleteEmployee(id);
-            if (employee)
-            {
-                return responce;
-            }
-            else
-            {
-                return new Responce() { ErrorMessage = "Data Not Found" };
-            }
-        }
-
+        public async Task<ActionResult<Responce>> DeleteEmployee(int id) => await emprepos.DeleteEmployee(id);
+        
 
         [Authorize(Roles ="Employee")]
         [HttpGet]
         [Route("GetEmployeeInfo")]
-        public async Task<ActionResult<EmployeeDto>> GetEmployeeInfo()
-        {
-
-
-            var employee = await emprepos.GetEmployeeInfo();
-            if (employee != null)
-            {
-                return employee;
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
-
-
+        public async Task<ActionResult<EmployeeDto>> GetEmployeeInfo()=> await emprepos.GetEmployeeInfo();
+       
     }
 }

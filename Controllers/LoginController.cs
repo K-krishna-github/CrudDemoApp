@@ -16,34 +16,7 @@ namespace CrudDemoApp.Controllers
             this.logrepos = logrepos;
         }
         [HttpPost]
-        public async Task<ActionResult<LoginResponse>> Login(LoginDto loginDto)
-        {
-            try
-            {
-                var responce = new LoginResponse();
+        public async Task<ActionResult<LoginResponse>> Login(LoginDto loginDto) => await logrepos.Login(loginDto);
 
-                var token = await logrepos.Login(loginDto);
-                if(token != null)
-                {
-                    responce.TokenModel = token;
-                    return responce;
-
-                }
-                else
-                {
-                    responce.ErrorMessage = "Invalid Creadentials";
-                    return responce;
-                }
-
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
-
-        
     }
 }

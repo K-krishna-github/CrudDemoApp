@@ -12,7 +12,7 @@ namespace CrudDemoApp.Repositories
 {
     public interface ILogin
     {
-        Task<TokenModel> Login(LoginDto loginDto);
+        Task<LoginResponse> Login(LoginDto loginDto);
     }
     public class LoginRepos :ILogin
     {
@@ -23,8 +23,9 @@ namespace CrudDemoApp.Repositories
             _context = context;
         }
 
-        public async Task<TokenModel> Login(LoginDto loginDto)
+        public async Task<LoginResponse> Login(LoginDto loginDto)
         {
+            var responce = new LoginResponse();
             try
             {
 
@@ -49,22 +50,22 @@ namespace CrudDemoApp.Repositories
 
                     var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
-                    return new TokenModel() { token = jwt };
+                    var tm = new TokenModel() { token = jwt };
+                    responce.TokenModel = tm;
+                    return responce;
 
 
                 }
                 else
                 {
-                    throw new ApplicationException("Data Not Found");
+                    responce.ErrorMessage = "Invalid Username and Password";
+                    return responce;
                 }
-
-
-
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                responce.ErrorMessage = ex.Message;
+                return responce;
             }
         }
     }

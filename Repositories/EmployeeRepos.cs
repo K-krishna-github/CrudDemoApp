@@ -152,7 +152,7 @@ namespace CrudDemoApp.Repositories
             try
             {
 
-                var employees = await _context.employees.Select(x => new EmployeeDto
+                var employees = await _context.employees.Where(x => x.IsActive && !x.IsDelete).Select(x => new EmployeeDto
                 {
                     Id = x.Id,
                     Name = x.Name,
